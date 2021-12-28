@@ -543,7 +543,7 @@ static  void stepperSetDirOutputs (axes_signals_t dir_outbits)
   #ifdef A_DIRECTION_PIN
     sd_sr.set.m3_dir = sd_sr.reset.m3_dir = dir_outbits.a;
   #endif
-    step_dir_sr4_write(pio0, 0, sd_sr.value);
+    //step_dir_sr4_write(pio0, 0, sd_sr.value);
 #elif DIRECTION_OUTMODE == GPIO_MAP
     gpio_put_masked(DIRECTION_MASK, dir_outmap[dir_outbits.mask]);
   #ifdef X2_DIRECTION_PIN

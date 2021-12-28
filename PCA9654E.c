@@ -30,11 +30,12 @@
 #include "ioexpand.h"
 #include "i2c.h"
 
-#define IOEX_ADDRESS (0x40 >> 1)
+//below are modified for alternate IO expander.
+#define IOEX_ADDRESS (0xE8 >> 1)
 #define READ_INPUT   0
-#define RW_OUTPUT    1
-#define RW_INVERSION 2
-#define RW_CONFIG    3
+#define RW_OUTPUT    2
+#define RW_INVERSION 4
+#define RW_CONFIG    6
 
 void ioexpand_init (void)
 {
