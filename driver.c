@@ -545,7 +545,9 @@ static void stepper_int_handler(void);
 static void gpio_int_handler(uint gpio, uint32_t events);
 static void spindle_set_speed(uint_fast16_t pwm_value);
 
-#if I2C_STROBE_ENABLE
+#if I2C_STROBE_BIT || SPI_IRQ_BIT
+
+#if I2C_STROBE_BIT
 static driver_irq_handler_t i2c_strobe = { .type = IRQ_I2C_Strobe };
 #endif
 
@@ -553,31 +555,34 @@ static driver_irq_handler_t i2c_strobe = { .type = IRQ_I2C_Strobe };
 static driver_irq_handler_t spi_irq = { .type = IRQ_SPI };
 #endif
 
-#if I2C_STROBE_BIT || SPI_IRQ_BIT
-
 static bool irq_claim (irq_type_t irq, uint_fast8_t id, irq_callback_ptr handler)
 {
-    bool ok;
+    bool ok = false;
+
+    switch(irq) {
 
 #if I2C_STROBE_BIT
-    if((ok = irq == IRQ_I2C_Strobe && i2c_strobe.callback == NULL)){
-        i2c_strobe.callback = handler;
-        return ok;
-    }
+        case IRQ_I2C_Strobe:
+            if((ok = i2c_strobe.callback == NULL))
+                i2c_strobe.callback = handler;
+            break;
 #endif
 
 #if SPI_IRQ_BIT
-    if((ok = irq == IRQ_SPI && spi_irq.callback == NULL)){
-        spi_irq.callback = handler;
-        return ok;
-    }
+        case IRQ_SPI:
+            if((ok = spi_irq.callback == NULL))
+                spi_irq.callback = handler;
+            break;
 #endif
+
+        default:
+            break;
+    }
 
     return ok;
 }
 
-#endif
-
+#endif // I2C_STROBE_BIT || SPI_IRQ_BIT
 
 static int64_t delay_callback(alarm_id_t id, void *callback)
 {
@@ -1086,7 +1091,7 @@ static control_signals_t __not_in_flash_func(systemGetState)(void)
 // Sets up the probe pin invert mask to
 // appropriately set the pin logic according to setting for normal-high/normal-low operation
 // and the probing cycle modes for toward-workpiece/away-from-workpiece.
-static void probeConfigure(bool is_probe_away, bool probing)
+static void probeConfigure (bool is_probe_away, bool probing)
 {
     probe.triggered = false;
     probe.inverted = is_probe_away ? !settings.probe.invert_probe_pin : settings.probe.invert_probe_pin;
@@ -1100,7 +1105,7 @@ static void probeConfigure(bool is_probe_away, bool probing)
 }
 
 // Returns the probe connected and triggered pin states.
-probe_state_t probeGetState(void)
+static probe_state_t probeGetState (void)
 {
     probe_state_t state = {0};
 
@@ -1117,7 +1122,7 @@ probe_state_t probeGetState(void)
 #ifdef DRIVER_SPINDLE
 
 // Static spindle (off, on cw & on ccw)
-inline static void spindle_off(void)
+inline static void spindle_off (void)
 {
 #if SPINDLE_PORT == GPIO_OUTPUT
 
@@ -1639,7 +1644,7 @@ void settings_changed (settings_t *settings, settings_changed_flags_t changed)
                     pullup = !settings->control_disable_pullup.safety_door_ajar;
                     input->invert = control_fei.safety_door_ajar;
                     input->active = DIGITAL_IN(input->bit);
-                        input->irq_mode = safety_door->invert ? IRQ_Mode_Low : IRQ_Mode_High);
+                        input->irq_mode = safety_door->invert ? IRQ_Mode_Low : IRQ_Mode_High;
                         break;
     #endif
                 case Input_Probe:
@@ -1861,6 +1866,8 @@ static bool driver_setup (settings_t *settings)
             gpio_set_dir_out_masked(outputpin[i].bit);
             if(outputpin[i].group == PinGroup_SpindlePWM)
                 gpio_set_function(outputpin[i].pin, GPIO_FUNC_PWM);
+            else if(outputpin[i].id == Output_SdCardCS)
+                DIGITAL_OUT(outputpin[i].bit, 1);
         }
     }
 
@@ -1962,6 +1969,9 @@ static bool driver_setup (settings_t *settings)
     pio_offset = pio_add_program(pio1, &out_sr16_program);
     out_sr16_program_init(pio1, out_sr_sm, pio_offset, OUT_SR_DATA_PIN, OUT_SR_SCK_PIN);
     pio_sm_claim(pio1, out_sr_sm);
+  #if SPI_RST_PORT == GPIO_SR16
+    spi_reset_out(1);
+  #endif
 #endif
 
 #if SDCARD_ENABLE
@@ -2045,7 +2055,7 @@ bool driver_init(void)
     systick_hw->csr = M0PLUS_SYST_CSR_TICKINT_BITS | M0PLUS_SYST_CSR_ENABLE_BITS;
 
     hal.info = "RP2040";
-    hal.driver_version = "230805";
+    hal.driver_version = "230820";
     hal.driver_options = "SDK_" PICO_SDK_VERSION_STRING;
     hal.driver_url = GRBL_URL "/RP2040";
 #ifdef BOARD_NAME

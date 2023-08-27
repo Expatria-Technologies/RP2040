@@ -28,9 +28,14 @@ endif()
 
 include(grbl/CMakeLists.txt)
 include(fatfs/CMakeLists.txt)
+include(motors/CMakeLists.txt)
 include(trinamic/CMakeLists.txt)
 include(spindle/CMakeLists.txt)
+include(sdcard/CMakeLists.txt)
 include(keypad/CMakeLists.txt)
+include(eeprom/CMakeLists.txt)
+include(fans/CMakeLists.txt)
+include(bluetooth/CMakeLists.txt)
 include(embroidery/CMakeLists.txt)
 if(ADD_HPGL)
     include(hpgl/CMakeLists.txt)
@@ -56,20 +61,9 @@ if(AddMyPlugin)
     ioports_analog.c
     tmc_uart.c
     my_plugin.c
-    eeprom/eeprom_24AAxxx.c
-    eeprom/eeprom_24LC16B.c
-    keypad/keypad.c
-    sdcard/sdcard.c
-    sdcard/ymodem.c
-    sdcard/fs_fatfs.c
-    sdcard/fs_littlefs.c
-    sdcard/macros.c
-    bluetooth/hc_05.c
-    motors/trinamic.c
     littlefs/lfs.c
     littlefs/lfs_util.c
     littlefs_hal.c
-    fans/fans.c
     )
 else()
     add_executable(grblHAL
@@ -87,20 +81,9 @@ else()
     ioports.c
     ioports_analog.c
     tmc_uart.c
-    eeprom/eeprom_24AAxxx.c
-    eeprom/eeprom_24LC16B.c
-    keypad/keypad.c
-    sdcard/sdcard.c
-    sdcard/ymodem.c
-    sdcard/fs_fatfs.c
-    sdcard/fs_littlefs.c
-    sdcard/macros.c
-    bluetooth/hc_05.c
-    motors/trinamic.c
     littlefs/lfs.c
     littlefs/lfs_util.c
     littlefs_hal.c
-    fans/fans.c
     )
 endif()
 
@@ -199,9 +182,14 @@ target_include_directories(grblHAL PRIVATE ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(grblHAL PRIVATE
  grbl
  fatfs
+ sdcard
+ motors
  trinamic
  spindle
  keypad
+ fans
+ bluetooth
+ eeprom
  embroidery
  tinyusb_device_unmarked
  pico_stdlib
