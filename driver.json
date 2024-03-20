@@ -1,6 +1,7 @@
 {
   "caps":
   {
+    "informal": 1,
     "axes": 6,
     "usb_cdc": 1,
     "uart": 1,
@@ -8,6 +9,7 @@
     "spindle_dir": 1,
     "serial_ports": 2,
     "eeprom": 1,
+    "i2c_strobe": 1,
     "ganged_axes": 1,
     "auto_square": 1,
     "digital_in": 8,
@@ -17,10 +19,10 @@
     "estop": 1,
     "mpg_mode": 1,
     "sdcard": 1,
-    "wifi": 0,
-    "wiznet": 0,
-    "bluetooth": 0,
-    "hc05": 0,
+    "wifi": 1,
+    "wiznet": 1,
+    "littlefs": 1,
+    "bluetooth": 1,
     "plugins": [
       { "id": "motors" },
       { "id": "spindle" },
@@ -52,13 +54,14 @@
         "axes": 5,
         "digital_in": 4,
         "digital_out": 8,
-        "eeprom": 0,
-        "fram": 0,
+        "i2c_strobe": 1,
+        "eeprom": 1,
+        "fram": 1,
+        "i2c": 1,
         "sdcard": 1,
         "wifi": 1,
         "wiznet": 1,
-        "bluetooth": 1,
-        "hc05": 1
+        "bluetooth": 1
       }
     },
     {
@@ -68,10 +71,8 @@
       "MAP": "picobob_map.h",
       "caps": {
         "axes": 5,
-        "digital_in": 0,
-        "digital_out": 0,
         "safety_door": 0,
-        "sdcard": 0
+        "serial_ports": 0
       }
     },
     {
@@ -81,10 +82,8 @@
       "MAP": "picobob_g540_map.h",
       "caps": {
         "axes": 4,
-        "digital_in": 0,
-        "digital_out": 0,
         "safety_door": 0,
-        "sdcard": 0
+        "serial_ports": 0
       }
     },
     {
@@ -96,9 +95,10 @@
         "axes": 5,
         "digital_in": 2,
         "digital_out": 3,
+        "i2c_strobe": 1,
         "safety_door": 0,
-        "sdcard": 0
-        "wiznet": 1,
+        "serial_ports": 0,
+        "wiznet": 1
       }
     },
     {
@@ -110,9 +110,10 @@
         "axes": 4,
         "digital_in": 2,
         "digital_out": 3,
+        "i2c_strobe": 1,
         "safety_door": 0,
-        "sdcard": 0
-        "wiznet": 1,
+        "serial_ports": 0,
+        "wiznet": 1
       }
     },
     {
@@ -136,10 +137,6 @@
       "MAP": "btt_skr_pico_10_map.h",
       "caps": {
         "axes": 4,
-        "digital_in": 0,
-        "digital_out": 0,
-        "sdcard": 0,
-        "wifi": 0,
         "trinamic": 2209,
         "trinamic_uart_addr": 1
       }
@@ -152,13 +149,9 @@
         "axes": 3,
         "digital_in": 1,
         "digital_out": 3,
-        "eeprom": 0,
-        "fram": 0,
-        "sdcard": 0,
+        "i2c_strobe": 1,
         "wifi": 1,
-        "wiznet": 0,
-        "bluetooth": 1,
-        "hc05": 0
+        "bluetooth": 1
       }
     },
     {
@@ -167,15 +160,9 @@
       "MAP": "generic_map_4axis.h",
       "caps": {
         "axes": 4,
-        "digital_in": 0,
-        "digital_out": 0,
-        "eeprom": 0,
-        "fram": 0,
-        "sdcard": 0,
+        "i2c_strobe": 1,
         "wifi": 1,
-        "wiznet": 0,
-        "bluetooth": 1,
-        "hc05": 0
+        "bluetooth": 1
       }
     }
   ]

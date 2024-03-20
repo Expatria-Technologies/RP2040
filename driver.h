@@ -4,21 +4,20 @@
 
   Part of grblHAL
 
-  Copyright (c) 2021-2023 Terje Io
+  Copyright (c) 2021-2024 Terje Io
 
-  Grbl is free software: you can redistribute it and/or modify
+  grblHAL is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  Grbl is distributed in the hope that it will be useful,
+  grblHAL is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
-
+  along with grblHAL. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //
@@ -273,15 +272,14 @@
 
 typedef struct {
     pin_function_t id;
-    pin_group_t group;
+    pin_cap_t cap;
+    pin_mode_t mode;
     uint8_t pin;
+    uint8_t user_port;
+    pin_group_t group;
     uint32_t bit;
-    uint8_t port;
-    bool invert;
-    pin_irq_mode_t irq_mode;
+    uint32_t port;
     volatile bool active;
-    volatile bool debounce;
-    pin_mode_t cap;
     ioport_interrupt_callback_ptr interrupt_callback;
     const char *description;
 } input_signal_t;
@@ -291,7 +289,7 @@ typedef struct {
     pin_group_t group;
     uint8_t pin;
     uint32_t bit;
-    uint8_t port;
+    uint32_t port;
     pin_mode_t mode;
     const char *description;
     uint8_t pwm_idx;
