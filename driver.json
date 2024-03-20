@@ -114,7 +114,21 @@
         "sdcard": 0
         "wiznet": 1,
       }
-    },    
+    },
+    {
+      "name": "PicoHAL",
+      "symbol": "BOARD_PICOHAL",
+      "URL": "https://github.com/Expatria-Technologies/PicoHAL",
+      "MAP": "picohal_map.h",
+      "caps": {
+        "axes": 4,
+        "digital_in": 2,
+        "digital_out": 3,
+        "safety_door": 0,
+        "sdcard": 0
+        "wiznet": 1,
+      }
+    },        
     {
       "name": "BTT SKR Pico 1.0",
       "symbol": "BOARD_BTT_SKR_PICO_10",
