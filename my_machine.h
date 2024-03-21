@@ -46,11 +46,12 @@
 // If none are specified the default PWM spindle is instantiated.
 // Spindle definitions can be found in grbl/spindle_control.h.
 // More here https://github.com/grblHAL/Plugins_spindle
-#define SPINDLE0_ENABLE         SPINDLE_PWM0
-#define SPINDLE1_ENABLE         SPINDLE_GS20
+//#define SPINDLE0_ENABLE         SPINDLE_PWM0
+//#define SPINDLE1_ENABLE         SPINDLE_GS20
 //#define SPINDLE2_ENABLE         SPINDLE_NONE 
 //#define SPINDLE2_ENABLE         SPINDLE_NONE
 // **********************
+#define VFD_ENABLE -1
 #define MODBUS_ENABLE           2 // Set to 1 for auto direction, 2 for direction signal on auxillary output pin.
 //#define WIFI_ENABLE             0 // Do NOT enable here, enable in CMakeLists.txt!
 //#define WIFI_SOFTAP             1 // Use Soft AP mode for WiFi. NOTE: WIP - not yet complete!
@@ -83,7 +84,7 @@
 // These will be assigned to aux input pins. Use the $pins command to check which pins are assigned.
 // NOTE: If not enough pins are available assignment will silently fail.
 //#define PROBE_ENABLE            0 // Default enabled, remove comment to disable probe input.
-//#define SAFETY_DOOR_ENABLE      1
+#define SAFETY_DOOR_ENABLE      1
 //#define MOTOR_FAULT_ENABLE      1
 //#define MOTOR_WARNING_ENABLE    1
 //#define PROBE_DISCONNECT_ENABLE 1

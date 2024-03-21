@@ -126,7 +126,7 @@
         "digital_in": 2,
         "digital_out": 3,
         "safety_door": 0,
-        "sdcard": 0
+        "sdcard": 0,
         "wiznet": 1,
       }
     },        

@@ -62,13 +62,13 @@
 #define AUXOUTPUT0_PORT         GPIO_OUTPUT
 #define AUXOUTPUT0_PIN          25
 #define MODBUS_DIR_AUX  0
-#define UART_PORT uart1
-#define UART_TX_PIN 8
-#define UART_RX_PIN 9
+
+#define SAFETY_DOOR_PIN 11
+
+#define SERIAL1_PORT 1
 
 #if MODBUS_ENABLE
-#define MODBUS_RTU_STREAM          0
-#define MODBUS_BAUDRATE 115200
+#define MODBUS_SERIAL_PORT          1
 #endif
 
 #if DRIVER_SPINDLE_PWM_ENABLE
