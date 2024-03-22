@@ -60,10 +60,8 @@
 
 //auxout0 first so that it is available for Modbus dir
 #define AUXOUTPUT0_PORT         GPIO_OUTPUT
-#define AUXOUTPUT0_PIN          25
+#define AUXOUTPUT0_PIN          27
 #define MODBUS_DIR_AUX  0
-
-#define SAFETY_DOOR_PIN 11
 
 #define SERIAL1_PORT 1
 
@@ -74,24 +72,22 @@
 #if DRIVER_SPINDLE_PWM_ENABLE
 #define SPINDLE_PWM_PORT        GPIO_OUTPUT
 #define SPINDLE_PWM_PIN         25
+
+#define AUXOUTPUT1_PORT         GPIO_OUTPUT
+#define AUXOUTPUT1_PIN          26   
 #else
 #define AUXOUTPUT1_PORT         GPIO_OUTPUT
 #define AUXOUTPUT1_PIN          25
-#endif
-
-#if DRIVER_SPINDLE_ENABLE
-#ifndef SPINDLE_PORT
-#define SPINDLE_PORT            GPIO_OUTPUT
-#endif
-#define SPINDLE_ENABLE_PIN      26
-#else
 #define AUXOUTPUT2_PORT         GPIO_OUTPUT
 #define AUXOUTPUT2_PIN          26   
 #endif
 
-// Define user-control controls (cycle start, reset, feed hold) input pins.  Only Estop is supported on the Mach3 BOB.
+#define AUXINPUT0_PIN           6
+#define AUXINPUT1_PIN           11
+//#define AUXINPUT2_PIN           7
+
+// Define user-control controls (cycle start, reset, feed hold) input pins.
 #define RESET_PIN             14
-#define FEED_HOLD_PIN         6
 
 //Stepper enable is replaced with coolant control
 #define COOLANT_PORT    GPIO_OUTPUT
