@@ -70,32 +70,61 @@
 #endif
 
 #if DRIVER_SPINDLE_PWM_ENABLE
+//Define 2 pin PWM port as PWM spindle output
 #define SPINDLE_PWM_PORT        GPIO_OUTPUT
 #define SPINDLE_PWM_PIN         25
 
+//Define 3 pin 'Neopixel" driver port as aux output
 #define AUXOUTPUT1_PORT         GPIO_OUTPUT
-#define AUXOUTPUT1_PIN          26   
-#else
-#define AUXOUTPUT1_PORT         GPIO_OUTPUT
-#define AUXOUTPUT1_PIN          25
+#define AUXOUTPUT1_PIN          26
+
+//Define cnc shield coolant pin as auxoutput
 #define AUXOUTPUT2_PORT         GPIO_OUTPUT
-#define AUXOUTPUT2_PIN          26   
+#define AUXOUTPUT2_PIN          27
+
+//Define cnc shield coolant pin as auxoutput
+#define AUXOUTPUT3_PORT         GPIO_OUTPUT
+#define AUXOUTPUT3_PIN          7
+
+#else
+//Define 2 pin PWM port as Aux output
+#define AUXOUTPUT1_PORT        GPIO_OUTPUT
+#define AUXOUTPUT1_PIN         25
+
+//Define 3 pin 'Neopixel" driver port as aux output
+#define AUXOUTPUT2_PORT         GPIO_OUTPUT
+#define AUXOUTPUT2_PIN          26
+
+//Define cnc shield coolant pin as auxoutput
+#define AUXOUTPUT3_PORT         GPIO_OUTPUT
+#define AUXOUTPUT3_PIN          27
+
+//Define cnc shield coolant pin as auxoutput
+#define AUXOUTPUT4_PORT         GPIO_OUTPUT
+#define AUXOUTPUT4_PIN          7
+
 #endif
 
+//define CNC shield HOLD pin as auxinput
 #define AUXINPUT0_PIN           6
+//define CNC shield RUN pin as auxinput
 #define AUXINPUT1_PIN           11
-//#define AUXINPUT2_PIN           7
 
-// Define user-control controls (cycle start, reset, feed hold) input pins.
-#define RESET_PIN             14
+//define CNC shield A4/A5 pins as Auxinput, these are ADC capable (3.3V max).
+#define AUXINPUT2_PIN           28
 
-//Stepper enable is replaced with coolant control
-#define COOLANT_PORT    GPIO_OUTPUT
-#define COOLANT_FLOOD_PIN     16
+#if (PROBE_ENABLE)
+#define PROBE_PIN               29
+#else
+#define AUXINPUT3_PIN           29
+#endif
 
-// Define probe switch input pin.
-#define PROBE_PIN             7
-#define PROBE_PORT            GPIO_INPUT
+// Define Reset/HALT pin
+#define RESET_PIN               14
+
+// Define stepper driver enable/disable output pin.
+#define ENABLE_PORT               GPIO_OUTPUT
+#define STEPPERS_ENABLE_PIN       24
 
 #if ETHERNET_ENABLE
 #define SPI_PORT            0
