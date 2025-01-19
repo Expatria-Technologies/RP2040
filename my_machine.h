@@ -32,6 +32,7 @@
 //#define BOARD_CNC_BOOSTERPACK
 //#define BOARD_CITOH_CX6000    // C.ITOH CX-6000 HPGL plotter
 //#define BOARD_GENERIC_4AXIS
+#define BOARD_FLEXIHAL2350
 //#define BOARD_MY_MACHINE      // Add my_machine_map.h before enabling this!
 
 // Configuration
