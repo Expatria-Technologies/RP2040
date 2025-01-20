@@ -159,7 +159,7 @@
 #elif defined(BOARD_GENERIC_4AXIS)
   #include "boards/generic_map_4axis.h"
 #elif defined(BOARD_FLEXIHAL2350)
-  #include "boards/generic_map_4axis.h"  
+  #include "boards/flexihal2350_map.h"  
 #else // default board
   #include "boards/generic_map.h"
 #endif
