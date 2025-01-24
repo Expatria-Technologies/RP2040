@@ -125,7 +125,7 @@
 #define AUXINPUT1_PIN           47  // Auxin 0 placeholder
 #define AUXINPUT3_PIN           39  // Probe
 #define AUXINPUT4_PIN           32  // Safety door
-#define AUXINPUT5_PIN           8  // I2C strobe pin
+//#define AUXINPUT5_PIN           8  // I2C strobe pin
 
 #define RESET_PIN               24
 #define FEED_HOLD_PIN           27
@@ -158,7 +158,7 @@
 #if ETHERNET_ENABLE
 #define SPI_CS_PIN              33
 #define SPI_IRQ_PIN             25
-//#define SPI_RST_PORT          43
+#define SPI_RST_PORT            8
 #endif
 
 #endif // SDCARD_ENABLE || ETHERNET_ENABLE

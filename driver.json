@@ -263,13 +263,13 @@
       "MAP": "boards/flexihal2350_map.h",
       "caps": {
         "axes": 6,
-        "digital_in": 4,
-        "digital_out": 8,
+        "digital_in": 1,
+        "digital_out": 3,
         "i2c_strobe": 1,
         "eeprom": 1,
         "fram": 0,
         "i2c": 1,
-        "sdcard": 1,
+        "sdcard": 0,
         "wifi": 0,
         "wiznet": 1,
         "bluetooth": 0

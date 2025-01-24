@@ -22,7 +22,7 @@
 #endif
 
 #ifndef WIZCHIP_SPI_FREQ
-#define WIZCHIP_SPI_FREQ 33000000 // 33MHz
+#define WIZCHIP_SPI_FREQ 3000000 // 33MHz
 #endif
 
 static struct {
@@ -100,7 +100,7 @@ void wizchip_reset (void)
     spi_reset_out(1);
 #else
     DIGITAL_OUT(hw.rst, 0);
-    hal.delay_ms(2, NULL);
+    hal.delay_ms(2000, NULL);
     DIGITAL_OUT(hw.rst, 1);
 #endif
     hal.delay_ms(75, NULL);

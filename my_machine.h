@@ -130,11 +130,12 @@
 //#define WEBDAV_ENABLE        1 // webdav protocol - requires http daemon and SD card enabled.
 #endif
 // The following symbols have the default values as shown, uncomment and change as needed.
-#define NETWORK_STA_HOSTNAME    "grblHAL"
-#define NETWORK_STA_IPMODE      0 // 0 = static, 1 = DHCP, 2 = AutoIP
-#define NETWORK_STA_IP          "192.168.5.1"
-#define NETWORK_STA_GATEWAY     "192.168.5.1"
-#define NETWORK_STA_MASK        "255.255.255.0"
+#define NETWORK_HOSTNAME        "FlexiHAL"
+#define NETWORK_IPMODE          0 // 0 = static, 1 = DHCP, 2 = AutoIP
+#define NETWORK_IP              "192.168.5.1"
+#define NETWORK_GATEWAY         "192.168.5.1"
+#define NETWORK_MASK            "255.255.255.0"
+#define NETWORK_FTP_PORT        21
 #if WIFI_SOFTAP > 0
 //#define NETWORK_AP_SSID         "grblHAL_AP"
 //#define NETWORK_AP_PASSWORD     "grblHALap"
@@ -144,13 +145,13 @@
 //#define NETWORK_AP_GATEWAY      "192.168.4.1"  // Do not change!
 //#define NETWORK_AP_MASK         "255.255.255.0"
 #endif
-//#define NETWORK_FTP_PORT     21
-//#define NETWORK_TELNET_PORT  23
-//#define NETWORK_HTTP_PORT    80
+#define NETWORK_FTP_PORT     21
+#define NETWORK_TELNET_PORT  23
+#define NETWORK_HTTP_PORT    80
 #if HTTP_ENABLE
 //#define NETWORK_WEBSOCKET_PORT  81
 #else
-//#define NETWORK_WEBSOCKET_PORT  80
+#define NETWORK_WEBSOCKET_PORT  80
 #endif
 #endif // WIFI_ENABLE
 
