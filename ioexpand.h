@@ -34,26 +34,74 @@
 #define ioex_inN(pin) io_expander.in ## pin
 
 typedef union {
-    uint8_t mask;
+    uint32_t mask;
     struct {
-        uint8_t out0 :1,
+        uint32_t out0 :1,
                 out1 :1,
                 out2 :1,
                 out3 :1,
                 out4 :1,
                 out5 :1,
                 out6 :1,
-                out7 :1;
+                out7 :1,
+                out8 :1,
+                out9 :1,
+                out10 :1,
+                out11 :1,
+                out12 :1,
+                out13 :1,
+                out14 :1,
+                out15 :1,
+                out16 :1,
+                out17 :1,
+                out18 :1,
+                out19 :1,
+                out20 :1,
+                out21 :1,
+                out22 :1,
+                out23 :1,
+                out24 :1,
+                out25 :1,
+                out26 :1,
+                out27 :1,
+                out28 :1,
+                out29 :1,
+                out30 :1, 
+                out31 :1;                                               
     };
     struct {
-        uint8_t in0 :1,
+        uint32_t in0 :1,
                 in1 :1,
                 in2 :1,
                 in3 :1,
                 in4 :1,
                 in5 :1,
                 in6 :1,
-                in7 :1;
+                in7 :1,
+                in8 :1,
+                in9 :1,
+                in10 :1,
+                in11 :1,
+                in12 :1,
+                in13 :1,
+                in14 :1,
+                in15 :1,
+                in16 :1,
+                in17 :1,
+                in18 :1,
+                in19 :1,
+                in20 :1,
+                in21 :1,
+                in22 :1,
+                in23 :1,
+                in24 :1,
+                in25 :1,
+                in26 :1,
+                in27 :1,
+                in28 :1,
+                in29 :1,
+                in30 :1, 
+                in31 :1;   
     };
 } ioexpand_t;
 

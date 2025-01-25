@@ -95,6 +95,7 @@ else()
     i2c.c
     spi.c
     PCA9654E.c
+    rpioexpand.c
     ioports.c
     ioports_analog.c
     tmc_uart.c

@@ -22,7 +22,7 @@
 #endif
 
 #ifndef WIZCHIP_SPI_FREQ
-#define WIZCHIP_SPI_FREQ 3000000 // 33MHz
+#define WIZCHIP_SPI_FREQ 50000000 // 33MHz
 #endif
 
 static struct {

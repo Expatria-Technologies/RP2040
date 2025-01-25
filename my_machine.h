@@ -19,6 +19,8 @@
   along with grblHAL. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#define N_AXIS 6
+
 // NOTE: Only one board may be enabled!
 // If none is enabled pin mappings from generic_map.h will be used.
 //#define BOARD_PICO_CNC
@@ -63,7 +65,7 @@
 //#define WEBUI_ENABLE            3 // Enable ESP3D-WEBUI plugin along with networking and SD card plugins. Requires WiFi enabled.
 //#define WEBUI_AUTH_ENABLE       1 // Enable ESP3D-WEBUI authentication.
 //#define WEBUI_INFLASH           1 // Store WebUI files in flash instead of on SD card.
-#define SDCARD_ENABLE           2 // Run gcode programs from SD card. Set to 2 to enable YModem upload.
+//#define SDCARD_ENABLE           2 // Run gcode programs from SD card. Set to 2 to enable YModem upload.
 //#define MPG_ENABLE              1 // Enable MPG interface. Requires a serial stream and means to switch between normal and MPG mode.
                                     // 1: Mode switching is by handshake pin.
                                     // 2: Mode switching is by the CMD_MPG_MODE_TOGGLE (0x8B) command character.

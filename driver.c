@@ -1645,7 +1645,7 @@ inline static void spindle_off (void)
 
 #elif SPINDLE_PORT == GPIO_IOEXPAND
 
-    ioex_out(SPINDLE_ENABLE_PIN) = settings.spindle.invert.on;
+    ioex_out(SPINDLE_ENABLE_PIN) = settings.pwm_spindle.invert.on;
     ioexpand_out(io_expander);
 
 #elif SPINDLE_PORT == GPIO_SR16
@@ -1666,7 +1666,7 @@ inline static void spindle_on (void)
 
 #elif SPINDLE_PORT == GPIO_IOEXPAND
 
-    ioex_out(SPINDLE_ENABLE_PIN) = !settings.spindle.invert.on;
+    ioex_out(SPINDLE_ENABLE_PIN) = !settings.pwm_spindle.invert.on;
     ioexpand_out(io_expander);
 
 #elif SPINDLE_PORT == GPIO_SR16
@@ -1687,7 +1687,7 @@ inline static void spindle_dir (bool ccw)
 
 #elif SPINDLE_PORT == GPIO_IOEXPAND
 
-    ioex_out(SPINDLE_DIRECTION_PIN) = ccw ^ settings.spindle.invert.ccw;
+    ioex_out(SPINDLE_DIRECTION_PIN) = ccw ^ settings.pwm_spindle.invert.ccw;
     ioexpand_out(io_expander);
 
 #elif SPINDLE_PORT == GPIO_SR16
@@ -1830,7 +1830,7 @@ static spindle_state_t spindleGetState (spindle_ptrs_t *spindle)
 #ifdef SPINDLE_ENABLE_PIN
     state.on = DIGITAL_IN(SPINDLE_ENABLE_PIN);
 #else
-    state.on = pwmEnabled ^ settings.spindle.invert.on;
+    state.on = pwmEnabled ^ settings.pwm_spindle.invert.on;
 #endif
 #ifdef SPINDLE_DIRECTION_PIN
     state.ccw = DIGITAL_IN(SPINDLE_DIRECTION_PIN);
@@ -1869,7 +1869,7 @@ static void coolantSetState (coolant_state_t mode)
 
 #elif COOLANT_PORT == GPIO_IOEXPAND
 
-    mode.value ^= settings.coolant_invert.mask;
+    mode.value ^= settings.coolant.invert.mask;
     ioex_out(COOLANT_FLOOD_PIN) = mode.flood;
 #ifdef COOLANT_MIST_PIN
     ioex_out(COOLANT_MIST_PIN) = mode.mist;
