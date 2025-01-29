@@ -27,54 +27,57 @@
 
 #if IOEXPAND_ENABLE == 2
 
+#include "grbl/settings.h"
 #include "ioexpand.h"
 #include "i2c.h"
 
-#define IOEX_ADDRESS (0x40 >> 1)
-#define READ_INPUT   0
-#define RW_OUTPUT    1
-#define RW_INVERSION 2
-#define RW_CONFIG    3
+#define IOEX_ADDRESS (0x48)
+
+static ioexpand_t pinvals;
+
+//contains data from the host (output set values, polarity mask).
+typedef struct __attribute__((packed)) {
+    uint32_t value;
+    uint32_t polarity_mask;
+    uint32_t enable_mask;
+} io_packet_t;
 
 void ioexpand_init (void)
 {
-    uint8_t cmd[2];
+    uint8_t cmd[12];
 
-    // 0 = output, 1 = input
-    // TODO: move to driver.h?
-    const ioexpand_t cfg = {0};
+    settings.probe.invert_probe_pin;
+    settings.probe.invert_toolsetter_input;
 
-    cmd[0] = RW_CONFIG;
-    cmd[1] = cfg.mask;
-    i2c_send(IOEX_ADDRESS, cmd, 2, true);
-
-    cmd[0] = RW_INVERSION;
-    cmd[1] = 0;
-    i2c_send(IOEX_ADDRESS, cmd, 2, true);
 }
 
 void ioexpand_out (ioexpand_t pins)
 {
-    uint8_t cmd[2];
+    uint8_t cmd[4];
 
-    cmd[0] = RW_OUTPUT;
-    cmd[1] = pins.mask;
+    pinvals = pins;
 
-    i2c_send(IOEX_ADDRESS, cmd, 2, true);
+    // Split 32-bit mask into individual bytes
+    cmd[0] = pins.mask & 0xFF;         // Least significant byte
+    cmd[1] = (pins.mask >> 8) & 0xFF;  // Second byte
+    cmd[2] = (pins.mask >> 16) & 0xFF; // Third byte
+    cmd[3] = (pins.mask >> 24) & 0xFF; // Most significant byte
+
+    i2c_send(IOEX_ADDRESS, cmd, 4, true);
 }
 
 ioexpand_t ioexpand_in (void)
 {
     ioexpand_t pins = {0};
     uint8_t cmd[4] = {0}; // Use 4 bytes to match 32-bit uint32_t
-    cmd[0] = READ_INPUT;
+    //cmd[0] = READ_INPUT;
     
-    i2c_receive(IOEX_ADDRESS, cmd, 4, true);
+    //i2c_receive(IOEX_ADDRESS, cmd, 4, true);
     
     // Convert received bytes to 32-bit value
     pins.mask = (cmd[3] << 24) | (cmd[2] << 16) | (cmd[1] << 8) | cmd[0];
     
-    return pins;
+    return pinvals;
 
 }
 

@@ -749,6 +749,33 @@ static void stepperEnable (axes_signals_t enable, bool hold)
 #ifdef STEPPERS_DISABLEZ_PIN
     ioex_out(STEPPERS_DISABLEZ_PIN) = enable.z;
 #endif
+#ifndef STEPPERS_ENABLE_PIN
+    ioex_out(X_ENABLE_PIN) = enable.x;
+#ifdef Y_ENABLE_PIN
+    ioex_out(Y_ENABLE_PIN) = enable.y;
+#endif
+    ioex_out(Z_ENABLE_PIN) = enable.z;
+#ifdef X2_ENABLE_PIN
+    ioex_out(X2_ENABLE_PIN) = enable.x;
+#endif
+#ifdef Y2_ENABLE_PIN
+    ioex_out(Y2_ENABLE_PIN) = enable.y;
+#endif
+#ifdef Z2_ENABLE_PIN
+    ioex_out(Z2_ENABLE_PIN) = enable.z;
+#endif
+#ifdef A_ENABLE_PIN
+    ioex_out(A_ENABLE_PIN) = enable.a;
+#endif
+#ifdef B_ENABLE_PIN
+    ioex_out(B_ENABLE_PIN) = enable.b;
+#endif
+#ifdef C_ENABLE_PIN
+    ioex_out(C_ENABLE_PIN) = enable.c;
+#endif
+#else // STEPPERS_ENABLE_PIN
+    ioex_out(STEPPERS_ENABLE_PIN) = enable.x;
+#endif
     ioexpand_out(io_expander);
 #endif
 }

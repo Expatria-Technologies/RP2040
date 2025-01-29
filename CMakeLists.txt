@@ -73,11 +73,13 @@ if(AddMyPlugin)
     i2c.c
     spi.c
     PCA9654E.c
+    rpioexpand.c
     ioports.c
     ioports_analog.c
     tmc_uart.c
     MCP3221.c
     my_plugin.c
+    boards/flexihal2350.c
     boards/pico_cnc.c
     boards/btt_skr_pico_10.c
     littlefs/lfs.c
@@ -100,6 +102,7 @@ else()
     ioports_analog.c
     tmc_uart.c
     MCP3221.c
+    boards/flexihal2350.c
     boards/pico_cnc.c
     boards/btt_skr_pico_10.c
     littlefs/lfs.c
@@ -118,6 +121,7 @@ endif()
 target_compile_definitions(grblHAL PUBLIC RP2040)
 target_compile_definitions(grblHAL PUBLIC NEW_FATFS)
 target_compile_definitions(grblHAL PUBLIC LITTLEFS_ENABLE=1)
+target_compile_definitions(grblHAL PUBLIC N_AXIS=6)
 
 if(ADD_WIFI)
     target_compile_definitions(grblHAL PUBLIC WIFI_ENABLE=1)

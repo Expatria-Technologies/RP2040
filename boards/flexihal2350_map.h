@@ -33,9 +33,10 @@
 #endif
 
 #define BOARD_NAME "FLEXIHAL2350"
+#define HAS_BOARD_INIT
 
 #undef I2C_ENABLE
-//#define I2C_ENABLE    1
+#define I2C_ENABLE    1
 //#define SERIAL1_PORT  0
 
 #define IOEXPAND_ENABLE 2
@@ -53,11 +54,11 @@
 #define Y_DIRECTION_PIN         15
 #define Z_DIRECTION_PIN         17
 
-// Define stepper driver enable/disable output pin.
+// Define stepper driver enable/disable output pins.
 #define ENABLE_PORT             GPIO_IOEXPAND
-#define X_ENABLE_PIN            0
-#define Y_ENABLE_PIN            1
-#define Z_ENABLE_PIN            2
+#define X_ENABLE_PIN            29 //RP2040 pin
+#define Y_ENABLE_PIN            28 //RP2040 pin
+#define Z_ENABLE_PIN            27 //RP2040 pin
 
 // Define homing/hard limit switch input pins.
 #define X_LIMIT_PIN             38
@@ -71,7 +72,7 @@
 #define M3_STEP_PIN             18
 #define M3_DIRECTION_PIN        19
 #define M3_LIMIT_PIN            35
-#define M3_ENABLE_PIN           3
+#define M3_ENABLE_PIN           26 //RP2040 pin
 #endif
 
 #if N_ABC_MOTORS >= 2
@@ -79,14 +80,14 @@
 #define M4_STEP_PIN             20
 #define M4_DIRECTION_PIN        21
 #define M4_LIMIT_PIN            34
-#define M4_ENABLE_PIN           4
+#define M4_ENABLE_PIN           25 //RP2040 pin
 #endif
 
 #if N_ABC_MOTORS == 3
 #define M5_AVAILABLE
 #define M5_STEP_PIN             22
 #define M5_DIRECTION_PIN        23
-#define M5_ENABLE_PIN           5
+#define M5_ENABLE_PIN           24 //RP2040 pin
 #endif
 
 #define AUXOUTPUT0_PORT         GPIO_OUTPUT //spindle pwm
@@ -96,42 +97,42 @@
 #define SPINDLE_PORT            GPIO_IOEXPAND
 #endif
 #if DRIVER_SPINDLE_ENABLE & SPINDLE_ENA
-#define SPINDLE_ENABLE_PIN      6
+#define SPINDLE_ENABLE_PIN      11 //RP2040 pin
 #endif
 #if DRIVER_SPINDLE_ENABLE & SPINDLE_PWM
 #define SPINDLE_PWM_PORT        AUXOUTPUT0_PORT
 #define SPINDLE_PWM_PIN         AUXOUTPUT0_PIN
 #endif
 #if DRIVER_SPINDLE_ENABLE & SPINDLE_DIR
-#define SPINDLE_DIRECTION_PIN   7
+#define SPINDLE_DIRECTION_PIN   12 //RP2040 pin
 #endif
 
 #if COOLANT_ENABLE
 #define COOLANT_PORT            GPIO_IOEXPAND
 #endif
 #if COOLANT_ENABLE & COOLANT_MIST
-#define COOLANT_MIST_PIN        8
+#define COOLANT_MIST_PIN        13 //RP2040 pin
 #endif
 #if COOLANT_ENABLE & COOLANT_FLOOD
-#define COOLANT_FLOOD_PIN       9
+#define COOLANT_FLOOD_PIN       14 //RP2040 pin
 #endif
 
 #define AUXOUTPUT1_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT1_PIN          10
+#define AUXOUTPUT1_PIN          23 //RP2040 pin
 #define AUXOUTPUT2_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT2_PIN          11
+#define AUXOUTPUT2_PIN          22 //RP2040 pin
 #define AUXOUTPUT3_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT3_PIN          12
+#define AUXOUTPUT3_PIN          21 //RP2040 pin
 #define AUXOUTPUT4_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT4_PIN          13
+#define AUXOUTPUT4_PIN          20 //RP2040 pin
 #define AUXOUTPUT5_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT5_PIN          14
+#define AUXOUTPUT5_PIN          19 //RP2040 pin
 #define AUXOUTPUT6_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT6_PIN          15
+#define AUXOUTPUT6_PIN          18 //RP2040 pin
 #define AUXOUTPUT7_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT7_PIN          16
+#define AUXOUTPUT7_PIN          17 //RP2040 pin
 #define AUXOUTPUT8_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT8_PIN          17
+#define AUXOUTPUT8_PIN          16 //RP2040 pin
 
 #define AUXINPUT0_PIN           47  //Encoder 2
 #define AUXINPUT1_PIN           46  //Encoder 2
