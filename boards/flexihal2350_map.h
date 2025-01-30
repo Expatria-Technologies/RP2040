@@ -148,14 +148,19 @@
 #define AUXINPUT9_PIN           8  // I2C strobe pin
 
 #define AUXINPUT10_PIN           31  // Motor Alarm
-#define AUXINPUT11_PIN           39  // Probe
+//#define AUXINPUT11_PIN           39  // Probe
 
 #define RESET_PIN               24
 #define FEED_HOLD_PIN           27
 #define CYCLE_START_PIN         30
 
 #if PROBE_ENABLE
-#define PROBE_PIN               AUXINPUT11_PIN
+#define PROBE_PORT              GPIO_INPUT
+#define PROBE_PIN               39
+#endif
+
+#if MOTOR_FAULT_ENABLE
+#define MOTOR_FAULT_PIN        31
 #endif
 
 #if SAFETY_DOOR_ENABLE
