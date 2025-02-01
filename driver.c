@@ -227,7 +227,7 @@ static input_signal_t *safety_door;
 #endif
 
 #if IOEXPAND_ENABLE
-static ioexpand_t io_expander = {0};
+ioexpand_t io_expander = {0};//intialize ioexpander union
 #endif
 
 #ifdef NEOPIXELS_PIN

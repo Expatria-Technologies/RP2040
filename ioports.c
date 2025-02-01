@@ -30,6 +30,10 @@
 
 #include "hardware/gpio.h"
 
+#ifdef IOEXPAND_ENABLE
+#include "ioexpand.h"
+#endif
+
 #include "grbl/protocol.h"
 #include "grbl/settings.h"
 
@@ -72,7 +76,23 @@ static void digital_out (uint8_t port, bool on)
 {
     if(port < digital.out.n_ports) {
         port = ioports_map(digital.out, port);
+    #ifdef IOEXPAND_ENABLE        
+        switch (aux_out[port].port) {
+            case GPIO_IOEXPAND :
+                //explicit if statement is clunky, but avoids type cast?
+                if (on)
+                    io_expander.mask |= (1UL << aux_out[port].pin);
+                else
+                    io_expander.mask &= ~(1UL << aux_out[port].pin);
+                ioexpand_out(io_expander);
+                break;
+            default :
+                DIGITAL_OUT(aux_out[port].pin, on);
+            break; 
+        }//close switch statement.
+    #else
         DIGITAL_OUT(aux_out[port].pin, on);
+    #endif
     }
 }
 

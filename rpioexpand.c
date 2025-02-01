@@ -49,6 +49,8 @@ void ioexpand_init (void)
     settings.probe.invert_probe_pin;
     settings.probe.invert_toolsetter_input;
 
+    
+
 }
 
 void ioexpand_out (ioexpand_t pins)

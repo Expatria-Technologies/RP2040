@@ -90,8 +90,8 @@
 #define M5_ENABLE_PIN           24 //RP2040 pin
 #endif
 
-#define AUXOUTPUT0_PORT         GPIO_OUTPUT //spindle pwm
-#define AUXOUTPUT0_PIN          26
+//#define AUXOUTPUT0_PORT         GPIO_OUTPUT //spindle pwm
+//#define AUXOUTPUT0_PIN          26
 
 #if DRIVER_SPINDLE_ENABLE
 #define SPINDLE_PORT            GPIO_IOEXPAND
@@ -100,8 +100,8 @@
 #define SPINDLE_ENABLE_PIN      11 //RP2040 pin
 #endif
 #if DRIVER_SPINDLE_ENABLE & SPINDLE_PWM
-#define SPINDLE_PWM_PORT        AUXOUTPUT0_PORT
-#define SPINDLE_PWM_PIN         AUXOUTPUT0_PIN
+#define SPINDLE_PWM_PORT        GPIO_OUTPUT
+#define SPINDLE_PWM_PIN         26
 #endif
 #if DRIVER_SPINDLE_ENABLE & SPINDLE_DIR
 #define SPINDLE_DIRECTION_PIN   12 //RP2040 pin
@@ -117,22 +117,22 @@
 #define COOLANT_FLOOD_PIN       14 //RP2040 pin
 #endif
 
+#define AUXOUTPUT0_PORT         GPIO_IOEXPAND
+#define AUXOUTPUT0_PIN          23 //RP2040 pin
 #define AUXOUTPUT1_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT1_PIN          23 //RP2040 pin
+#define AUXOUTPUT1_PIN          22 //RP2040 pin
 #define AUXOUTPUT2_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT2_PIN          22 //RP2040 pin
+#define AUXOUTPUT2_PIN          21 //RP2040 pin
 #define AUXOUTPUT3_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT3_PIN          21 //RP2040 pin
+#define AUXOUTPUT3_PIN          20 //RP2040 pin
 #define AUXOUTPUT4_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT4_PIN          20 //RP2040 pin
+#define AUXOUTPUT4_PIN          19 //RP2040 pin
 #define AUXOUTPUT5_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT5_PIN          19 //RP2040 pin
+#define AUXOUTPUT5_PIN          18 //RP2040 pin
 #define AUXOUTPUT6_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT6_PIN          18 //RP2040 pin
+#define AUXOUTPUT6_PIN          17 //RP2040 pin
 #define AUXOUTPUT7_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT7_PIN          17 //RP2040 pin
-#define AUXOUTPUT8_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT8_PIN          16 //RP2040 pin
+#define AUXOUTPUT7_PIN          16 //RP2040 pin
 
 #define AUXINPUT0_PIN           47  //Encoder 2
 #define AUXINPUT1_PIN           46  //Encoder 2

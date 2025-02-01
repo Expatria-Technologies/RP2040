@@ -43,7 +43,6 @@ void board_init (void)
 
     hal.driver_cap.toolsetter = 1;
 
-
 }
 
 #endif
