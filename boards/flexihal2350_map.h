@@ -33,7 +33,7 @@
 #endif
 
 #define BOARD_NAME "FLEXIHAL2350"
-#define HAS_BOARD_INIT
+#define HAS_BOARD_INIT 1
 
 #undef I2C_ENABLE
 #define I2C_ENABLE    1
@@ -90,33 +90,6 @@
 #define M5_ENABLE_PIN           24 //RP2040 pin
 #endif
 
-//#define AUXOUTPUT0_PORT         GPIO_OUTPUT //spindle pwm
-//#define AUXOUTPUT0_PIN          26
-
-#if DRIVER_SPINDLE_ENABLE
-#define SPINDLE_PORT            GPIO_IOEXPAND
-#endif
-#if DRIVER_SPINDLE_ENABLE & SPINDLE_ENA
-#define SPINDLE_ENABLE_PIN      11 //RP2040 pin
-#endif
-#if DRIVER_SPINDLE_ENABLE & SPINDLE_PWM
-#define SPINDLE_PWM_PORT        GPIO_OUTPUT
-#define SPINDLE_PWM_PIN         26
-#endif
-#if DRIVER_SPINDLE_ENABLE & SPINDLE_DIR
-#define SPINDLE_DIRECTION_PIN   12 //RP2040 pin
-#endif
-
-#if COOLANT_ENABLE
-#define COOLANT_PORT            GPIO_IOEXPAND
-#endif
-#if COOLANT_ENABLE & COOLANT_MIST
-#define COOLANT_MIST_PIN        13 //RP2040 pin
-#endif
-#if COOLANT_ENABLE & COOLANT_FLOOD
-#define COOLANT_FLOOD_PIN       14 //RP2040 pin
-#endif
-
 #define AUXOUTPUT0_PORT         GPIO_IOEXPAND
 #define AUXOUTPUT0_PIN          23 //RP2040 pin
 #define AUXOUTPUT1_PORT         GPIO_IOEXPAND
@@ -131,8 +104,38 @@
 #define AUXOUTPUT5_PIN          18 //RP2040 pin
 #define AUXOUTPUT6_PORT         GPIO_IOEXPAND
 #define AUXOUTPUT6_PIN          17 //RP2040 pin
-#define AUXOUTPUT7_PORT         GPIO_IOEXPAND
-#define AUXOUTPUT7_PIN          16 //RP2040 pin
+//#define AUXOUTPUT7_PORT         GPIO_IOEXPAND
+//#define AUXOUTPUT7_PIN          16 //RP2040 pin
+
+#define AUXOUTPUT7_PORT          GPIO_OUTPUT // Spindle PWM
+#define AUXOUTPUT7_PIN           26
+
+#if COOLANT_ENABLE
+#define COOLANT_PORT            GPIO_IOEXPAND
+#endif
+#if COOLANT_ENABLE & COOLANT_MIST
+#define COOLANT_MIST_PIN        13 //RP2040 pin
+#endif
+#if COOLANT_ENABLE & COOLANT_FLOOD
+#define COOLANT_FLOOD_PIN       14 //RP2040 pin
+#endif
+/*
+#if DRIVER_SPINDLE_ENABLE
+#define SPINDLE_PORT               GPIO_OUTPUT
+#define SPINDLE_ENABLE_PORT        GPIO_OUTPUT
+#define SPINDLE_DIRECTION_PORT     GPIO_IOEXPAND
+#define SPINDLE_PWM_PORT           GPIO_OUTPUT // Spindle PWM
+#endif
+#if DRIVER_SPINDLE_ENABLE & SPINDLE_ENA
+#define SPINDLE_ENABLE_PIN      26 //RP2040 pin
+#endif
+#if DRIVER_SPINDLE_ENABLE & SPINDLE_PWM
+#define SPINDLE_PWM_PIN         26
+#endif
+#if DRIVER_SPINDLE_ENABLE & SPINDLE_DIR
+#define SPINDLE_DIRECTION_PIN   12 //RP2040 pin
+#endif
+*/
 
 #define AUXINPUT0_PIN           47  //Encoder 2
 #define AUXINPUT1_PIN           46  //Encoder 2
@@ -145,7 +148,7 @@
 #define AUXINPUT6_PIN           32  // Safety door
 #define AUXINPUT7_PIN           8  // I2C strobe pin
 #define AUXINPUT8_PIN           32  // Safety door
-#define AUXINPUT9_PIN           8  // I2C strobe pin
+#define AUXINPUT9_PIN           8  // I2C strobe pin ***WRONG!!!***
 
 #define AUXINPUT10_PIN           31  // Motor Alarm
 //#define AUXINPUT11_PIN           39  // Probe
@@ -172,20 +175,12 @@
 #endif
 
 #if SDCARD_ENABLE || ETHERNET_ENABLE
-#define SPI_ENABLE 1
 
 #define SPI_PORT                0
 #define SPI_SCK_PIN             2
 #define SPI_MOSI_PIN            3
 #define SPI_MISO_PIN            0
-
-#if SDCARD_ENABLE
-#define SD_SPI_PORT                1
-#define SD_SPI_SCK_PIN             2
-#define SD_SPI_MOSI_PIN            3
-#define SSD_PI_MISO_PIN            0
-#define SD_CS_PIN               41
-#endif
+#define SD_CS_PIN               44
 
 #if ETHERNET_ENABLE
 #define SPI_CS_PIN              33
@@ -201,7 +196,8 @@
 #define I2C_SCL                 7
 #endif
 
-#ifdef SERIAL1_PORT
-#define UART_1_RX_PIN           29
-#define UART_1_TX_PIN          28
+#if MODBUS_ENABLE
+#define MODBUS_RTU_STREAM          0
+#define UART_RX_PIN          29
+#define UART_TX_PIN          28
 #endif

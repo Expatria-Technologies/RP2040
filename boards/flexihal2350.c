@@ -35,13 +35,49 @@
 
 void board_init (void)
 {
-
     /*
     settings.motor_fault_enable
     settings.motor_fault_invert
     */
-
+    #if 1
     hal.driver_cap.toolsetter = 1;
+    gpio_set_function(SPI_MOSI_PIN, GPIO_FUNC_SIO);
+    gpio_set_dir(SPI_MOSI_PIN, 1);
+    gpio_put(SPI_MOSI_PIN,1);
+    gpio_set_function(SPI_MOSI_PIN, GPIO_FUNC_SIO);
+    gpio_set_dir(SPI_MISO_PIN, 1);
+    gpio_put(SPI_MISO_PIN,1);  
+    gpio_set_function(SPI_SCK_PIN, GPIO_FUNC_SIO);
+    gpio_set_dir(SPI_SCK_PIN, 1);
+    gpio_put(SPI_SCK_PIN,1);      
+    gpio_set_function(SD_CS_PIN, GPIO_FUNC_SIO);
+    gpio_set_dir(SD_CS_PIN, 1);
+    gpio_put(SD_CS_PIN,1);
+    gpio_set_function(33, GPIO_FUNC_SIO);
+    gpio_set_dir(33, 1);
+    gpio_put(33,1);
+
+
+    volatile uint32_t dly = 1000;
+    volatile uint32_t count = 100;
+
+    while(--dly)
+      tight_loop_contents();
+    
+      while(--count) {
+        gpio_put(SPI_SCK_PIN,1);        
+        dly = 100;  // Reset dly before first delay
+        while(--dly)    
+          tight_loop_contents();
+
+            gpio_put(SPI_SCK_PIN,0);        
+        dly = 100;  // Reset dly before second delay
+        while(--dly)
+          tight_loop_contents();;
+      }
+
+    sdcard_getfs(); // Mounts SD card if not already mounted      
+    #endif
 
 }
 
