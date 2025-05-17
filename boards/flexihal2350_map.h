@@ -36,7 +36,11 @@
 #define HAS_BOARD_INIT 1
 
 #undef I2C_ENABLE
+#undef EEPROM_ENABLE
 #define I2C_ENABLE    1
+#define EEPROM_ENABLE 2
+
+//#define I2C_STROBE_ENABLE 1
 //#define SERIAL1_PORT  0
 
 #define IOEXPAND_ENABLE 2
@@ -104,11 +108,8 @@
 #define AUXOUTPUT5_PIN          18 //RP2040 pin
 #define AUXOUTPUT6_PORT         GPIO_IOEXPAND
 #define AUXOUTPUT6_PIN          17 //RP2040 pin
-//#define AUXOUTPUT7_PORT         GPIO_IOEXPAND
-//#define AUXOUTPUT7_PIN          16 //RP2040 pin
-
-#define AUXOUTPUT7_PORT          GPIO_OUTPUT // Spindle PWM
-#define AUXOUTPUT7_PIN           26
+#define AUXOUTPUT7_PORT         GPIO_IOEXPAND
+#define AUXOUTPUT7_PIN          16 //RP2040 pin
 
 #if COOLANT_ENABLE
 #define COOLANT_PORT            GPIO_IOEXPAND
@@ -119,15 +120,15 @@
 #if COOLANT_ENABLE & COOLANT_FLOOD
 #define COOLANT_FLOOD_PIN       14 //RP2040 pin
 #endif
-/*
+
 #if DRIVER_SPINDLE_ENABLE
-#define SPINDLE_PORT               GPIO_OUTPUT
-#define SPINDLE_ENABLE_PORT        GPIO_OUTPUT
+#define SPINDLE_PORT               GPIO_IOEXPAND
+#define SPINDLE_ENABLE_PORT        GPIO_IOEXPAND
 #define SPINDLE_DIRECTION_PORT     GPIO_IOEXPAND
 #define SPINDLE_PWM_PORT           GPIO_OUTPUT // Spindle PWM
 #endif
 #if DRIVER_SPINDLE_ENABLE & SPINDLE_ENA
-#define SPINDLE_ENABLE_PIN      26 //RP2040 pin
+#define SPINDLE_ENABLE_PIN      11 //RP2040 pin
 #endif
 #if DRIVER_SPINDLE_ENABLE & SPINDLE_PWM
 #define SPINDLE_PWM_PIN         26
@@ -135,7 +136,7 @@
 #if DRIVER_SPINDLE_ENABLE & SPINDLE_DIR
 #define SPINDLE_DIRECTION_PIN   12 //RP2040 pin
 #endif
-*/
+
 
 #define AUXINPUT0_PIN           47  //Encoder 2
 #define AUXINPUT1_PIN           46  //Encoder 2
@@ -185,7 +186,6 @@
 #if ETHERNET_ENABLE
 #define SPI_CS_PIN              33
 #define SPI_IRQ_PIN             25
-//#define SPI_RST_PORT            8
 #endif
 
 #endif // SDCARD_ENABLE || ETHERNET_ENABLE

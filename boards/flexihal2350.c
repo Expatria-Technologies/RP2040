@@ -32,6 +32,87 @@
 #include "grbl/settings.h"
 #include "grbl/nvs_buffer.h"
 
+static on_execute_realtime_ptr on_execute_realtime, on_execute_delay;
+static on_reset_ptr on_reset;
+
+static uint32_t debounce_ms = 0;
+static uint32_t polling_ms = 0;
+#define DEBOUNCE_DELAY 25
+#define ALARM_THRESHOLD 3
+
+#define N_MOTOR_ALARMS 5
+
+static int8_t val[N_MOTOR_ALARMS] = {0};
+static bool motor_alarm_active = false;
+
+typedef struct {
+    axes_signals_t     enable;
+    axes_signals_t     invert;
+} motor_alarm_settings_t;
+
+static axes_signals_t motor_alarm_pins;
+
+static nvs_address_t alm_nvs_address;
+motor_alarm_settings_t motor_alarms;
+
+static const setting_detail_t motor_alarm_settings[] = {
+    { 744, Group_Stepper, "Motor Alarm enable", NULL, Format_AxisMask, NULL, NULL, NULL, Setting_IsExpanded, &motor_alarms.enable.mask, NULL, NULL},
+    { 745, Group_Stepper, "Motor Alarm invert", NULL, Format_AxisMask, NULL, NULL, NULL, Setting_IsExpanded, &motor_alarms.invert.mask, NULL, NULL},
+};
+
+#ifndef NO_SETTINGS_DESCRIPTIONS
+
+static const setting_descr_t motor_alarm_descriptions[] = {
+    { 744, "Enables the motor alarm" },
+    { 745, "Inverts motor alarm signal" },
+};
+
+#endif
+static void alarm_reset (void)
+{
+    if(on_reset)
+        on_reset();
+
+    motor_alarm_active = false;
+}
+
+static void execute_alarm (sys_state_t state)
+{   
+    
+    if(!motor_alarm_active){
+
+        if(motor_alarm_pins.x){
+            report_message("Motor Error on X Axis!", Message_Warning);   
+        }
+
+        if(motor_alarm_pins.y){
+            report_message("Motor Error on Y Axis!", Message_Warning);   
+        }
+        
+        if(motor_alarm_pins.z){
+            report_message("Motor Error on Z Axis!", Message_Warning);   
+        }
+
+        if(motor_alarm_pins.a){
+            report_message("Motor Error on A Axis!", Message_Warning);   
+        }
+
+        if(motor_alarm_pins.b){
+            report_message("Motor Error on B Axis!", Message_Warning);   
+        }
+
+        if(motor_alarm_pins.c){
+          report_message("Motor Error on C Axis!", Message_Warning);   
+      }        
+
+        if(motor_alarm_pins.value > 0){
+            system_set_exec_alarm(Alarm_EStop);
+        }
+        motor_alarm_active = true;
+    }         
+    
+}
+
 
 void board_init (void)
 {
@@ -76,9 +157,12 @@ void board_init (void)
           tight_loop_contents();;
       }
 
-    sdcard_getfs(); // Mounts SD card if not already mounted      
+    //sdcard_getfs(); // Mounts SD card if not already mounted      
     #endif
 
 }
+
+
+
 
 #endif

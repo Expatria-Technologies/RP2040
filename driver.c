@@ -2578,7 +2578,7 @@ static bool driver_setup (settings_t *settings)
                 continue;
 
             gpio_init(outputpin[i].pin);
-            if(outputpin[i].id == PinGroup_StepperEnable || outputpin[i].id == Output_SdCardCS)
+            if(outputpin[i].id == PinGroup_StepperEnable || outputpin[i].id == Output_SdCardCS || outputpin[i].id == Output_SPICS)
                 DIGITAL_OUT(outputpin[i].pin, 1);
 
             gpio_set_dir_out_masked64(1ULL << outputpin[i].pin);

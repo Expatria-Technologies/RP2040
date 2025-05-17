@@ -22,7 +22,7 @@
 #endif
 
 #ifndef WIZCHIP_SPI_FREQ
-#define WIZCHIP_SPI_FREQ 50000000 // 33MHz
+#define WIZCHIP_SPI_FREQ 33000000 // 33MHz
 #endif
 
 static struct {
@@ -36,7 +36,8 @@ static volatile bool spin_lock = false;
 static void __not_in_flash_func(wizchip_select) (void)
 {
     if(spi_freq != WIZCHIP_SPI_FREQ) {
-        uint32_t freq = spi_set_speed(WIZCHIP_SPI_FREQ);
+        uint32_t freq = WIZCHIP_SPI_FREQ;
+        spi_set_speed(WIZCHIP_SPI_FREQ);
         if(freq != WIZCHIP_SPI_FREQ)
             spi_freq = freq;
     }

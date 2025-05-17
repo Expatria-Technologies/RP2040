@@ -205,7 +205,7 @@ static
 void set_max_speed(void)
 {
 #if SDCARD_ENABLE
-  	spi_set_speed(12000000); // 12 MHz
+  	spi_set_speed(33000000); // 12 MHz
 #endif
 }
 
