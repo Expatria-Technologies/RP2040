@@ -34,6 +34,7 @@
 //#define BOARD_GENERIC_4AXIS
 //#define BOARD_GENERIC_8AXIS
 //#define BOARD_MY_MACHINE      // Add my_machine_map.h before enabling this!
+#define BOARD_FLEXISTOP
 
 // Configuration
 // Uncomment to enable.
@@ -48,7 +49,7 @@
 // If none are specified the default PWM spindle is instantiated.
 // Spindle definitions can be found in grbl/spindle_control.h.
 // More here https://github.com/grblHAL/Plugins_spindle
-//#define SPINDLE0_ENABLE         SPINDLE_HUANYANG1
+#define SPINDLE0_ENABLE         SPINDLE_NONE
 //#define SPINDLE1_ENABLE         SPINDLE_PWM0
 //#define SPINDLE2_ENABLE         SPINDLE_NONE 
 //#define SPINDLE2_ENABLE         SPINDLE_NONE
@@ -75,7 +76,7 @@
 //#define LASER_COOLANT_ENABLE    1 // Laser coolant plugin. To be completed.
 //#define LASER_OVD_ENABLE        1 // Enable M-code for overdrive PWM output during spindle off in RPM controlled mode.
 //#define LB_CLUSTERS_ENABLE      1 // LaserBurn cluster support.
-//#define FANS_ENABLE             1 // Enable fan control via M106/M107. Activates fan plugin.
+#define FANS_ENABLE             1 // Enable fan control via M106/M107. Activates fan plugin.
 //#define EMBROIDERY_ENABLE       1 // Embroidery plugin. To be completed.
 //#define TRINAMIC_ENABLE         1 // Trinamic TMC2130 stepper driver support. NOTE: work in progress.
 //#define TRINAMIC_I2C            1 // Trinamic I2C - SPI bridge interface.
@@ -89,7 +90,7 @@
 //#define EVENTOUT_ENABLE         1 // Enable binding events (triggers) to control auxiliary outputs.
 //#define ESP_AT_ENABLE           1 // Enable support for Telnet communication via UART connected ESP32 running ESP-AT.
 //#define FEED_OVERRIDE_ENABLE    1 // Enable M200 feed override control.
-//#define HOMING_PULLOFF_ENABLE   1 // Enable per axis homing pulloff distance settings.
+#define HOMING_PULLOFF_ENABLE   1 // Enable per axis homing pulloff distance settings.
 
 // IO expanders:
 //
@@ -101,8 +102,8 @@
 // Optional control signals:
 // These will be assigned to aux input pins. Use the $pins command to check which pins are assigned.
 // NOTE: If not enough pins are available assignment will silently fail.
-//#define PROBE_ENABLE            0 // Default enabled, remove comment to disable probe input.
-//#define PROBE2_ENABLE           1 // Enable second regular probe input, depending on the board the input assigned may be predefined.
+#define PROBE_ENABLE            1 // Default enabled, remove comment to disable probe input.
+#define PROBE2_ENABLE           1 // Enable second regular probe input, depending on the board the input assigned may be predefined.
 //#define TOOLSETTER_ENABLE       1 // Enable toolsetter input, depending on the board the input assigned may be predefined.
 //#define SAFETY_DOOR_ENABLE      1
 //#define MOTOR_FAULT_ENABLE      1
