@@ -113,6 +113,8 @@
 #define UART_1_TX_PIN 8
 #define UART_1_RX_PIN 9
 
+#define NANOMODBUS_STREAM 1
+
 // Ethernet
 #if ETHERNET_ENABLE
 #define SPI_PORT            0

@@ -118,7 +118,7 @@ target_compile_definitions(grblHAL PUBLIC RP_MCU=2350)
 endif()
 target_compile_definitions(grblHAL PUBLIC RP2040)
 target_compile_definitions(grblHAL PUBLIC NEW_FATFS)
-#target_compile_definitions(grblHAL PUBLIC LITTLEFS_ENABLE=1)
+target_compile_definitions(grblHAL PUBLIC LITTLEFS_ENABLE=2)
 
 if(ADD_WIFI)
     target_compile_definitions(grblHAL PUBLIC WIFI_ENABLE=1)

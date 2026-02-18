@@ -22,15 +22,19 @@
 #include "driver.h"
 #include "nanomodbus/nanomodbus.h"
 
+#include <stdio.h>
 #include <string.h>
 
 //#include "serial.h"
 #include "grbl/modbus.h"
 #include "grbl/settings.h"
 #include "grbl/protocol.h"
+#include "sdcard/fs_stream.h"
 
-static io_stream_t *stream;
+
 static on_report_options_ptr on_report_options;
+
+static on_execute_realtime_ptr on_execute_realtime = NULL, on_execute_delay;
 
 typedef struct {
     uint32_t baud_rate;
@@ -48,12 +52,18 @@ static const modbus_silence_timeout_t dflt_timeout =
     .b115200 = 2
 };
 
+static const io_stream_t *stream = NULL;
 static io_stream_t nanomodbus_stream;
 static uint8_t dir_port = IOPORT_UNASSIGNED;
 
 // The data model of this sever will support coils addresses 0 to 100 and registers addresses from 0 to 32
 #define COILS_ADDR_MAX 100
 #define REGS_ADDR_MAX 32
+
+#define MACRO_TRIGGER_REGISTER 10   // choose any free holding register
+
+static volatile bool macro_pending = false;
+static volatile uint16_t macro_number = 0;
 
 // Our RTU address
 #define RTU_SERVER_ADDRESS 1
@@ -62,11 +72,16 @@ static uint8_t dir_port = IOPORT_UNASSIGNED;
 nmbs_bitfield server_coils = {0};
 uint16_t server_registers[REGS_ADDR_MAX + 1] = {0};
 
-static io_stream_t nano_uart;
+nmbs_platform_conf platform_conf;
+nmbs_callbacks callbacks;
+
+nmbs_t nmbs;
 
 void onError() {
-    // Set the led ON on error
-    while (true) {
+    // output message on error
+    
+    
+    while (false) {
         //digitalWrite(LED_BUILTIN, HIGH);
     }
 }
@@ -117,16 +132,22 @@ nmbs_error handle_write_multiple_registers(uint16_t address, uint16_t quantity, 
     if (address + quantity > REGS_ADDR_MAX + 1)
         return NMBS_EXCEPTION_ILLEGAL_DATA_ADDRESS;
 
-    // Write registers values to our server_registers
-    for (int i = 0; i < quantity; i++)
-        server_registers[address + i] = registers[i];
+for (int i = 0; i < quantity; i++) {
+    uint16_t reg = address + i;
+    server_registers[reg] = registers[i];
+
+    if (reg == MACRO_TRIGGER_REGISTER) {
+        macro_number = registers[i];
+        macro_pending = true;
+    }
+}
 
     return NMBS_ERROR_NONE;
 }
 
 size_t stream_read_bytes(uint8_t *buf, size_t count, uint32_t timeout_ms)
 {
-    if (!stream || !stream->read || !buf || count == 0)
+    if (!stream || !nanomodbus_stream.read || !buf || count == 0)
         return 0;
 
     size_t read_count = 0;
@@ -134,15 +155,16 @@ size_t stream_read_bytes(uint8_t *buf, size_t count, uint32_t timeout_ms)
 
     while (read_count < count) {
 
-        int16_t c = stream->read();
+        int16_t c = nanomodbus_stream.read();
 
-        if (c >= 0) {
-            buf[read_count++] = (uint8_t)c;
-            continue;
-        }
+        // Stop immediately if no byte is available
+        if (c < 0)
+            break;
 
-        // No data available — check timeout
-        if ((hal.get_elapsed_ticks() - start) >= timeout_ms)
+        buf[read_count++] = (uint8_t)c;
+
+        // Optional timeout guard (usually not needed for non-blocking mode)
+        if (timeout_ms && (hal.get_elapsed_ticks() - start) >= timeout_ms)
             break;
     }
 
@@ -157,7 +179,7 @@ int32_t read_serial(uint8_t* buf, uint16_t count, int32_t byte_timeout_ms, void*
 
 int32_t write_serial(const uint8_t* buf, uint16_t count, int32_t byte_timeout_ms, void* arg) {
     ioport_digital_out(dir_port, 1);
-    stream->write_n(buf, count);
+    nanomodbus_stream.write_n(buf, count);
     ioport_digital_out(dir_port, 0);
 
     return count;
@@ -172,26 +194,70 @@ static void onReportOptions (bool newopt)
 
 }
 
+static void check_macro_execute(uint_fast16_t state)
+{
+    if (!macro_pending)
+        return;
+
+    macro_pending = false;
+
+    char fname[32];
+    snprintf(fname, sizeof(fname), "%d.gcode", macro_number);
+
+    report_message("Executing Macro", Message_Plain);
+    report_message(fname, Message_Plain);
+
+    stream_file(state, fname);
+}
+
+static void onExecuteRealtime (uint_fast16_t state)
+{
+
+    nmbs_server_poll(&nmbs);
+    check_macro_execute(state);
+    on_execute_realtime(state);
+}
+
+static void onExecuteDelay (uint_fast16_t state)
+{
+
+    nmbs_server_poll(&nmbs);
+    check_macro_execute(state);
+    on_execute_delay(state);
+}
+
 void my_plugin_init (void)
 {
-    nmbs_platform_conf platform_conf;
     nmbs_platform_conf_create(&platform_conf);
     platform_conf.transport = NMBS_TRANSPORT_RTU;
     platform_conf.read = read_serial;
     platform_conf.write = write_serial;
     platform_conf.arg = NULL;
 
-    nmbs_callbacks callbacks;
     nmbs_callbacks_create(&callbacks);
     callbacks.read_coils = handle_read_coils;
     callbacks.write_multiple_coils = handle_write_multiple_coils;
     callbacks.read_holding_registers = handler_read_holding_registers;
     callbacks.write_multiple_registers = handle_write_multiple_registers;
+
+    nmbs_server_create(&nmbs, RTU_SERVER_ADDRESS, &platform_conf, &callbacks);
+
+    nmbs_set_read_timeout(&nmbs, 1000);
+    nmbs_set_byte_timeout(&nmbs, 100);
   
     bool ok;
-    io_stream_t const *stream = stream_open_instance(NANOMODBUS_STREAM, 115200, NULL, "NanoMODBUS UART");
+    stream = stream_open_instance(NANOMODBUS_STREAM, 115200, NULL, "NanoMODBUS UART");
+
+    if(stream)
+        report_message("NanoModbus stream opened", Message_Plain);
+    else
+        report_message("NanoModbus stream FAILED", Message_Warning);    
+        
     if((ok = stream != NULL)) {
         memcpy(&nanomodbus_stream, stream, sizeof(io_stream_t));
+
+        stream = stream_null_init(115200);
+
         nanomodbus_stream.set_enqueue_rt_handler(stream_buffer_all);
     }
 
@@ -206,10 +272,17 @@ void my_plugin_init (void)
 
     if((dir_pin = d_out.claim(&d_out, &dir_port, NULL, (pin_cap_t){}))) {
         ioport_set_function(dir_pin, Output_RS485_Direction, NULL);
+        ioport_digital_out(dir_port, 0);
     }
 
     on_report_options = grbl.on_report_options;
-    grbl.on_report_options = onReportOptions;    
+    grbl.on_report_options = onReportOptions;
+    
+    on_execute_realtime = grbl.on_execute_realtime;
+    grbl.on_execute_realtime = onExecuteRealtime;
+
+    on_execute_delay = grbl.on_execute_delay;
+    grbl.on_execute_delay = onExecuteDelay;    
 }
 
 
