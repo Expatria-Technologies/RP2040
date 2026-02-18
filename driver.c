@@ -227,7 +227,7 @@ static volatile uint32_t elapsed_ticks = 0;
 static pin_group_pins_t limit_inputs;
 
 #ifdef USE_EXPANDERS
-static xbar_t *iox_out[16] = {};
+static xbar_t *iox_out[N_AUX_DOUT_MAX] = {};
 #endif
 
 #ifdef NEOPIXELS_PIN
@@ -3035,7 +3035,7 @@ bool driver_init (void)
 #else
     hal.info = "RP2350";
 #endif
-    hal.driver_version = "260211";
+    hal.driver_version = "260216";
     hal.driver_options = "SDK_" PICO_SDK_VERSION_STRING;
     hal.driver_url = GRBL_URL "/RP2040";
 #ifdef BOARD_NAME
