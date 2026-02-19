@@ -43,6 +43,6 @@
 [submodule "plasma"]
 	path = plasma
 	url = https://github.com/grblHAL/Plugin_plasma/
-[submodule "nanomodbus"]
-	path = nanomodbus
-	url = https://github.com/Expatria-Technologies/nanoMODBUS.git
+[submodule "nmbs"]
+	path = nmbs
+	url = https://github.com/Expatria-Technologies/grblhal_nmbs_plugin.git
