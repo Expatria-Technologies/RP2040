@@ -115,6 +115,10 @@
 
 #define NANOMODBUS_STREAM 1
 
+#if RGB_LED_ENABLE
+#define NEOPIXELS_PIN               26
+#endif
+
 // Ethernet
 #if ETHERNET_ENABLE
 #define SPI_PORT            0
