@@ -227,7 +227,7 @@ static volatile uint32_t elapsed_ticks = 0;
 static pin_group_pins_t limit_inputs;
 
 #ifdef USE_EXPANDERS
-static xbar_t *iox_out[16] = {};
+static xbar_t *iox_out[N_AUX_DOUT_MAX] = {};
 #endif
 
 #ifdef NEOPIXELS_PIN
@@ -413,8 +413,6 @@ static input_signal_t inputpin[] = {
 #define SPI_RST_PORT GPIO_OUTPUT
 #endif
 
-#define add_aux_pin(a, p) !(AUX_CONTROLS & AUX_CONTROL_##a) && defined(a##_##p##_PIN) && a##_##p##_PORT != EXPANDER_PORT
-
 #define add_pin(p) defined(p##_PIN) && p##_PORT != EXPANDER_PORT
 #define add_step_pin(p) { .id = Output_Step##p, .port = p##_STEP_PORT, .pin = p##_STEP_PIN, .group = PinGroup_StepperStep, .mode = { STEP_PINMODE } },
 #define add_dir_pin(p) { .id = Output_Dir##p, .port = p##_DIRECTION_PORT, .pin = p##_DIRECTION_PIN, .group = PinGroup_StepperStep, .mode = { DIRECTION_PINMODE } },
@@ -525,7 +523,7 @@ static output_signal_t outputpin[] = {
     add_enable_pin(W)
 #endif
 #endif // !(TRINAMIC_ENABLE && TRINAMIC_I2C)
-#if add_aux_pin(SPINDLE, PWM) || (SPINDLE_ENABLE_PORT == EXPANDER_PORT && defined(SPINDLE_PWM_PIN))
+#if SPINDLE_ENABLE_PORT == EXPANDER_PORT && defined(SPINDLE_PWM_PIN)
     { .id = Output_SpindlePWM,   .port = SPINDLE_PWM_PORT, .pin = SPINDLE_PWM_PIN,       .group = PinGroup_SpindlePWM },
 #endif
 #ifdef RTS_PIN
@@ -539,18 +537,6 @@ static output_signal_t outputpin[] = {
 #endif
 #if add_pin(SPI_RST)
     { .id = Output_SPIRST,       .port = SPI_RST_PORT,     .pin = SPI_RST_PIN,           .group = PinGroup_SPI },
-#endif
-#if add_aux_pin(SPINDLE, ENABLE)
-    { .id = Output_SpindleOn,    .port = SPINDLE_ENABLE_PORT,    .pin = SPINDLE_ENABLE_PIN,    .group = PinGroup_SpindleControl},
-#endif
-#if add_aux_pin(SPINDLE, DIRECTION)
-    { .id = Output_SpindleDir,   .port = SPINDLE_DIRECTION_PORT, .pin = SPINDLE_DIRECTION_PIN, .group = PinGroup_SpindleControl},
-#endif
-#if add_aux_pin(COOLANT, FLOOD)
-    { .id = Output_CoolantFlood, .port = COOLANT_FLOOD_PORT,     .pin = COOLANT_FLOOD_PIN,     .group = PinGroup_Coolant},
-#endif
-#if add_aux_pin(COOLANT, MIST)
-    { .id = Output_CoolantMist,  .port = COOLANT_MIST_PORT,      .pin = COOLANT_MIST_PIN,      .group = PinGroup_Coolant},
 #endif
 #ifdef LED_PIN
     { .id = Output_LED,          .port = GPIO_OUTPUT,      .pin = LED_PIN,               .group = PinGroup_LED },
@@ -3049,7 +3035,7 @@ bool driver_init (void)
 #else
     hal.info = "RP2350";
 #endif
-    hal.driver_version = "260122";
+    hal.driver_version = "260216";
     hal.driver_options = "SDK_" PICO_SDK_VERSION_STRING;
     hal.driver_url = GRBL_URL "/RP2040";
 #ifdef BOARD_NAME
@@ -3282,10 +3268,6 @@ bool driver_init (void)
     if(aux_outputs_analog.n_pins)
         ioports_init_analog(&aux_inputs_analog, &aux_outputs_analog);
 
-    io_expanders_init();
-    aux_ctrl_claim_ports(aux_claim_explicit, NULL);
-    aux_ctrl_claim_out_ports(aux_out_claim_explicit, NULL);
-
 #if USB_SERIAL_CDC
 
 // Register $UF2 bootloader command
@@ -3304,6 +3286,10 @@ bool driver_init (void)
     system_register_commands(&boot_commands);
 
 #endif // USB_SERIAL_CDC
+
+    io_expanders_init();
+    aux_ctrl_claim_ports(aux_claim_explicit, NULL);
+    aux_ctrl_claim_out_ports(aux_out_claim_explicit, NULL);
 
 #if WIFI_ENABLE
     wifi_init();
