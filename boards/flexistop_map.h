@@ -64,11 +64,12 @@
 #define AUXOUTPUT2_PIN          24
 #define AUXOUTPUT3_PORT         GPIO_OUTPUT //Neo0
 #define AUXOUTPUT3_PIN          21
-#define AUXOUTPUT4_PORT         GPIO_OUTPUT //Neo1
-#define AUXOUTPUT4_PIN          20
+//#define AUXOUTPUT4_PORT         GPIO_OUTPUT //Neo1
+//#define AUXOUTPUT4_PIN          20
 
 #if RGB_LED_ENABLE
-#define NEOPIXELS_PIN               21
+#define NEOPIXELS_PIN           20
+#define NEOPIXELS_NUM           5
 #endif
 
 // Aux Inputs
