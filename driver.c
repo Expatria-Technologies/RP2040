@@ -188,7 +188,7 @@ static struct {
     int dma_ch;
     dma_channel_config dma_cfg;
     volatile alarm_id_t busy;
-} neop1;
+} neop1 = { .dma_ch = -1 };
 
 #endif
 
@@ -2431,7 +2431,7 @@ void settings_changed (settings_t *settings, settings_changed_flags_t changed)
                 neopixel1.num_bytes = hal.rgb1.num_devices * sizeof(uint32_t);
                 if((neopixel1.leds = calloc(neopixel1.num_bytes, sizeof(uint8_t))) == NULL)
                     hal.rgb1.num_devices = 0;
-                else
+                else if(neop1.dma_ch >= 0)
                     dma_channel_configure(neop1.dma_ch, &neop1.dma_cfg, &neop1.pio->txf[neop1.sm], neopixel1.leds, hal.rgb1.num_devices, true);
             }
 
@@ -2956,8 +2956,8 @@ static int64_t neop1_transfer_complete (alarm_id_t id, void *user_data)
 
 void neop1_dma_complete (void)
 {
-    if(dma_hw->ints0 & (1 << neop1.dma_ch)) {
-        dma_hw->ints0 = (1 << neop1.dma_ch);
+    if(dma_hw->ints1 & (1 << neop1.dma_ch)) {
+        dma_hw->ints1 = (1 << neop1.dma_ch);
         neop1.busy = add_alarm_in_us(400, neop1_transfer_complete, &neop1, true);
     }
 }
