@@ -182,6 +182,14 @@ static struct {
     volatile alarm_id_t busy;
 } neop;
 
+static struct {
+    PIO pio;
+    uint sm;
+    int dma_ch;
+    dma_channel_config dma_cfg;
+    volatile alarm_id_t busy;
+} neop1;
+
 #endif
 
 typedef union {
@@ -232,6 +240,10 @@ static xbar_t *iox_out[N_AUX_DOUT_MAX] = {};
 
 #ifdef NEOPIXELS_PIN
 neopixel_cfg_t neopixel = { .intensity = 255 };
+#endif
+
+#ifdef NEOPIXELS1_PIN
+neopixel_cfg_t neopixel1 = { .intensity = 255 };
 #endif
 
 #if SPINDLE_ENCODER_ENABLE
@@ -2401,6 +2413,33 @@ void settings_changed (settings_t *settings, settings_changed_flags_t changed)
 
 #endif // NEOPIXELS_PIN
 
+#ifdef NEOPIXELS1_PIN
+
+        if(hal.rgb1.out && (neopixel1.leds == NULL || hal.rgb1.num_devices != settings->rgb_strip.length1)) {
+
+            if(settings->rgb_strip.length1 == 0)
+                settings->rgb_strip.length1 = hal.rgb1.num_devices;
+            else
+                hal.rgb1.num_devices = settings->rgb_strip.length1;
+
+            if(neopixel1.leds) {
+                free(neopixel1.leds);
+                neopixel1.leds = NULL;
+            }
+
+            if(hal.rgb1.num_devices) {
+                neopixel1.num_bytes = hal.rgb1.num_devices * sizeof(uint32_t);
+                if((neopixel1.leds = calloc(neopixel1.num_bytes, sizeof(uint8_t))) == NULL)
+                    hal.rgb1.num_devices = 0;
+                else
+                    dma_channel_configure(neop1.dma_ch, &neop1.dma_cfg, &neop1.pio->txf[neop1.sm], neopixel1.leds, hal.rgb1.num_devices, true);
+            }
+
+            neopixel1.num_leds = hal.rgb1.num_devices;
+        }
+
+#endif // NEOPIXELS1_PIN
+
         step_pulse.t_min_period = (uint32_t)ceilf((settings->steppers.pulse_microseconds + STEP_PULSE_TOFF_MIN) * (hal.f_step_timer / 1000000.0f));
 
 #if SD_SHIFT_REGISTER
@@ -2821,6 +2860,108 @@ void neop_dma_complete (void)
     neop.busy = add_alarm_in_us(400, neop_transfer_complete, &neop, true);
   }
 }
+#ifdef NEOPIXELS1_PIN
+
+static void _write1 (void)
+{
+    while(neop1.busy);
+
+    dma_channel_set_read_addr(neop1.dma_ch, (void*)neopixel1.leds, true);
+}
+
+static void neopixels1_write (void)
+{
+    if(neopixel1.num_leds > 1)
+        _write1();
+}
+
+static void neopixel1_out_masked (uint16_t device, rgb_color_t color, rgb_color_mask_t mask)
+{
+    if(neopixel1.num_leds && device < neopixel1.num_leds) {
+
+        uint8_t *led = &neopixel1.leds[device * sizeof(uint32_t)] + 1;
+
+        color = rgb_set_intensity(color, neopixel1.intensity);
+
+        if(mask.B)
+            *led++ = color.B;
+        else
+            led++;
+
+        if(mask.R)
+            *led++ = color.R;
+        else
+            led++;
+
+        if(mask.G)
+            *led = color.G;
+
+        if(neopixel1.num_leds == 1)
+            _write1();
+    }
+}
+
+static void neopixel1_out (uint16_t device, rgb_color_t color)
+{
+    neopixel1_out_masked(device, color, (rgb_color_mask_t){ .mask = 0xFF });
+}
+
+static inline rgb_color_t rp_rgb1_1bpp_unpack (uint8_t *led, uint8_t intensity)
+{
+    rgb_color_t color = {0};
+
+    if(intensity) {
+
+        color.B = *led++;
+        color.R = *led++;
+        color.G = *led;
+
+        color = rgb_reset_intensity(color, intensity);
+    }
+
+    return color;
+}
+
+static uint8_t neopixels1_set_intensity (uint8_t intensity)
+{
+    uint8_t prev = neopixel1.intensity;
+
+    if(neopixel1.intensity != intensity) {
+
+        neopixel1.intensity = intensity;
+
+        if(neopixel1.num_leds) {
+
+            uint_fast16_t device = neopixel1.num_leds;
+            do {
+                device--;
+                rgb_color_t color = rp_rgb1_1bpp_unpack(&neopixel1.leds[device * sizeof(uint32_t)] + 1, prev);
+                neopixel1_out(device, color);
+            } while(device);
+
+            if(neopixel1.num_leds > 1)
+                _write1();
+        }
+    }
+
+    return prev;
+}
+
+static int64_t neop1_transfer_complete (alarm_id_t id, void *user_data)
+{
+    neop1.busy = 0;
+
+    return 0;
+}
+
+void neop1_dma_complete (void)
+{
+    if(dma_hw->ints0 & (1 << neop1.dma_ch)) {
+        dma_hw->ints0 = (1 << neop1.dma_ch);
+        neop1.busy = add_alarm_in_us(400, neop1_transfer_complete, &neop1, true);
+    }
+}
+#endif
 
 #elif defined(LED_G_PIN)
 
@@ -3437,6 +3578,43 @@ sr8_pio = sr8_delay_pio = sr8_hold_pio = pio0;
             registerPeriphPin(&neopin);
         }
     } // else report unavailable?
+
+#ifdef NEOPIXELS1_PIN
+
+    if(pio_claim_free_sm_and_add_program_for_gpio_range(&ws2812_program, &neop1.pio, &neop1.sm, &pio_offset, NEOPIXELS1_PIN, 1, true)) {
+
+        ws2812_program_init(neop1.pio, neop1.sm, pio_offset, NEOPIXELS1_PIN, 800000, false);
+
+        if((neop1.dma_ch = dma_claim_unused_channel(false)) >= 0) {
+
+            neop1.dma_cfg = dma_channel_get_default_config(neop1.dma_ch);
+            channel_config_set_read_increment(&neop1.dma_cfg, true);
+            channel_config_set_write_increment(&neop1.dma_cfg, false);
+            channel_config_set_transfer_data_size(&neop1.dma_cfg, DMA_SIZE_32);
+            channel_config_set_dreq(&neop1.dma_cfg, pio_get_dreq(neop1.pio, neop1.sm, true));
+
+            irq_set_exclusive_handler(DMA_IRQ_1, neop1_dma_complete);
+            dma_channel_set_irq1_enabled(neop1.dma_ch, true);
+            irq_set_enabled(DMA_IRQ_1, true);
+
+            hal.rgb1.out = neopixel1_out;
+            hal.rgb1.out_masked = neopixel1_out_masked;
+            hal.rgb1.set_intensity = neopixels1_set_intensity;
+            hal.rgb1.write = neopixels1_write;
+            hal.rgb1.num_devices = NEOPIXELS1_NUM;
+            hal.rgb1.flags = (rgb_properties_t){ .is_strip = On };
+            hal.rgb1.cap = (rgb_color_t){ .R = 255, .G = 255, .B = 255 };
+
+            const periph_pin_t neopin1 = {
+                .group = PinGroup_LED,
+                .function = Output_LED_Adressable,
+                .pin = NEOPIXELS1_PIN
+            };
+
+            registerPeriphPin(&neopin1);
+        }
+    } // else report unavailable?
+#endif 
 
 #elif defined(LED_G_PIN)
 

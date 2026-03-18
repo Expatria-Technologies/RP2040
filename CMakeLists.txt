@@ -100,6 +100,7 @@ else()
     tmc_uart.c
     boards/pico_cnc.c
     boards/btt_skr_pico_10.c
+    boards/picohal.c
     littlefs/lfs.c
     littlefs/lfs_util.c
     littlefs_hal.c

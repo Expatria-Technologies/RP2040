@@ -66,10 +66,10 @@
 #define AUXOUTPUT1_PIN          7
 #define AUXOUTPUT2_PORT         GPIO_OUTPUT // Spindle PWM (2 pin PWM port)
 #define AUXOUTPUT2_PIN          25
-#define AUXOUTPUT3_PORT         GPIO_OUTPUT // Spindle Direction (3 pin 'Neopixel" driver)
-#define AUXOUTPUT3_PIN          26
-#define AUXOUTPUT4_PORT         GPIO_OUTPUT // Stepper enable
-#define AUXOUTPUT4_PIN          24
+//#define AUXOUTPUT3_PORT         GPIO_OUTPUT // Spindle Direction (3 pin 'Neopixel" driver)
+//#define AUXOUTPUT3_PIN          26
+#define AUXOUTPUT3_PORT         GPIO_OUTPUT // Stepper enable
+#define AUXOUTPUT3_PIN          24
 
 #if DRIVER_SPINDLE_ENABLE
 #define SPINDLE_PORT            GPIO_OUTPUT
@@ -129,3 +129,12 @@
 #define SPI_IRQ_PIN         4
 #define SPI_RST_PORT        GPIO_OUTPUT
 #endif
+
+#undef TRINAMIC_ENABLE
+#undef TRINAMIC_UART_ENABLE
+#define TRINAMIC_ENABLE 2209
+#define TRINAMIC_UART_ENABLE 1
+#define TRINAMIC_STREAM 0
+#undef TRINAMIC_MIXED_DRIVERS
+#define TRINAMIC_MIXED_DRIVERS 0
+#define HAS_BOARD_INIT
