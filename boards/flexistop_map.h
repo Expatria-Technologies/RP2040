@@ -68,9 +68,9 @@
 //#define AUXOUTPUT4_PIN          20
 
 #if RGB_LED_ENABLE
-#define NEOPIXELS_PIN           20
+#define NEOPIXELS_PIN           21
 #define NEOPIXELS_NUM           5
-#define NEOPIXELS1_PIN           21
+#define NEOPIXELS1_PIN           20
 #define NEOPIXELS1_NUM           5
 #endif
 
